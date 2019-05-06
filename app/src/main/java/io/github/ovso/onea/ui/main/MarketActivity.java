@@ -1,9 +1,10 @@
-package io.github.ovso.onea;
+package io.github.ovso.onea.ui.main;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import io.github.ovso.onea.R;
 
-public class MainActivity extends AppCompatActivity {
+public class MarketActivity extends AppCompatActivity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
