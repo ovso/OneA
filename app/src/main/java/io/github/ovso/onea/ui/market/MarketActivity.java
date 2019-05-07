@@ -1,4 +1,4 @@
-package io.github.ovso.onea.ui.main;
+package io.github.ovso.onea.ui.market;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;

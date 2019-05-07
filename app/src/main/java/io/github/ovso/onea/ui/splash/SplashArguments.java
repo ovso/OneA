@@ -1,6 +1,5 @@
 package io.github.ovso.onea.ui.splash;
 
-import io.github.ovso.onea.data.rx.SchedulersFacade;
 import io.github.ovso.onea.ui.base.IBuilder;
 import io.github.ovso.onea.ui.utils.AppsInfoProvider;
 import lombok.Getter;

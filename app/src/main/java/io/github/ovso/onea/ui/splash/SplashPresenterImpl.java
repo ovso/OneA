@@ -1,15 +1,12 @@
 package io.github.ovso.onea.ui.splash;
 
-import android.content.Context;
 import android.content.pm.ResolveInfo;
 import io.github.ovso.onea.App;
-import io.github.ovso.onea.data.db.AppDatabase;
 import io.github.ovso.onea.data.db.dao.Apps;
 import io.github.ovso.onea.data.db.model.AppsEntity;
 import io.github.ovso.onea.ui.base.DisposablePresenter;
 import io.github.ovso.onea.ui.utils.AppsInfoProvider;
 import io.reactivex.Single;
-import java.util.List;
 import timber.log.Timber;
 
 class SplashPresenterImpl extends DisposablePresenter implements SplashPresenter {
@@ -28,9 +25,8 @@ class SplashPresenterImpl extends DisposablePresenter implements SplashPresenter
     addDisposable(
         Single.fromCallable(this::handleAppsInfo)
             .subscribeOn(schedulers.io())
-            .subscribe(a -> {
-              Timber.d(a.toString());
-            }, Timber::e)
+            .observeOn(schedulers.ui())
+            .subscribe(a -> view.navigateToMarket(), Timber::e)
     );
   }
 
