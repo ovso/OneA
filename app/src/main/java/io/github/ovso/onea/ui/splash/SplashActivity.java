@@ -2,8 +2,8 @@ package io.github.ovso.onea.ui.splash;
 
 import android.os.Bundle;
 import io.github.ovso.onea.R;
-import io.github.ovso.onea.data.rx.SchedulersFacade;
 import io.github.ovso.onea.ui.base.BaseActivity;
+import io.github.ovso.onea.ui.utils.AppsInfoProvider;
 
 public class SplashActivity extends BaseActivity implements SplashPresenter.View {
 
@@ -12,16 +12,22 @@ public class SplashActivity extends BaseActivity implements SplashPresenter.View
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    getLifecycle().addObserver(presenter);
+    presenter.onCreate();
   }
 
   private SplashArguments provideArguments() {
-    return new SplashArguments.Builder().setSchedulers(new SchedulersFacade())
+    return new SplashArguments.Builder()
+        .setAppsInfoProvider(new AppsInfoProvider(this))
         .setView(this)
         .Build();
   }
 
   @Override protected int getLayoutResId() {
     return R.layout.activity_splash;
+  }
+
+  @Override protected void onDestroy() {
+    super.onDestroy();
+    presenter.onDestroy();
   }
 }

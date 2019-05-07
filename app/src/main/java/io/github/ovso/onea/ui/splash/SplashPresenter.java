@@ -6,6 +6,8 @@ public interface SplashPresenter extends LifecycleObserver {
 
   void onCreate();
 
+  void onDestroy();
+
   interface View {
 
   }

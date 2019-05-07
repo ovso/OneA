@@ -2,6 +2,7 @@ package io.github.ovso.onea.ui.splash;
 
 import io.github.ovso.onea.data.rx.SchedulersFacade;
 import io.github.ovso.onea.ui.base.IBuilder;
+import io.github.ovso.onea.ui.utils.AppsInfoProvider;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -9,17 +10,17 @@ import lombok.experimental.Accessors;
 @Getter class SplashArguments {
 
   private final SplashPresenter.View view;
-  private final SchedulersFacade schedulers;
+  private final AppsInfoProvider appsInfoProvider;
 
   private SplashArguments(Builder builder) {
     view = builder.view;
-    schedulers = builder.schedulers;
+    appsInfoProvider = builder.appsInfoProvider;
   }
 
   @Setter @Accessors(chain = true) public static class Builder
       implements IBuilder<SplashArguments> {
     private SplashPresenter.View view;
-    private SchedulersFacade schedulers;
+    private AppsInfoProvider appsInfoProvider;
 
     @Override public SplashArguments Build() {
       return new SplashArguments(this);
