@@ -47,6 +47,6 @@ class SplashPresenterImpl extends DisposablePresenter implements SplashPresenter
   }
 
   @Override public void onDestroy() {
-
+    clearDisposable();
   }
 }
