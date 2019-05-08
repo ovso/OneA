@@ -5,7 +5,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import lombok.ToString;
 
-@ToString @Entity(tableName = "APPS_INFO") public class AppsEntity {
+@ToString @Entity(tableName = "APPS_INFO") public class AppEntity {
   @PrimaryKey(autoGenerate = true)
   public int id;
 

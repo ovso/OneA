@@ -11,5 +11,7 @@ public interface SplashPresenter extends LifecycleObserver {
   interface View {
 
     void navigateToMarket();
+
+    void finish();
   }
 }

@@ -3,7 +3,7 @@ package io.github.ovso.onea.ui.splash;
 import android.content.pm.ResolveInfo;
 import io.github.ovso.onea.App;
 import io.github.ovso.onea.data.db.dao.Apps;
-import io.github.ovso.onea.data.db.model.AppsEntity;
+import io.github.ovso.onea.data.db.model.AppEntity;
 import io.github.ovso.onea.ui.base.DisposablePresenter;
 import io.github.ovso.onea.ui.utils.AppsInfoProvider;
 import io.reactivex.Single;
@@ -26,13 +26,17 @@ class SplashPresenterImpl extends DisposablePresenter implements SplashPresenter
         Single.fromCallable(this::handleAppsInfo)
             .subscribeOn(schedulers.io())
             .observeOn(schedulers.ui())
-            .subscribe(a -> view.navigateToMarket(), Timber::e)
+            .subscribe(a -> {
+              view.navigateToMarket();
+              view.finish();
+            }, Timber::e)
     );
   }
 
   private Apps handleAppsInfo() {
+    apps.deleteAll();
     for (ResolveInfo resolveInfo : appsInfoProvider.getInstallApps()) {
-      final AppsEntity entity = new AppsEntity();
+      final AppEntity entity = new AppEntity();
       String pkg = appsInfoProvider.getPkgName(resolveInfo);
       entity.pkg = pkg;
       entity.market = appsInfoProvider.getFromInstalledMarket(pkg);

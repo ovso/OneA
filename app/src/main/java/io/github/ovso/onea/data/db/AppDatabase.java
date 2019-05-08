@@ -5,10 +5,10 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import io.github.ovso.onea.data.db.dao.Apps;
-import io.github.ovso.onea.data.db.model.AppsEntity;
+import io.github.ovso.onea.data.db.model.AppEntity;
 
 @Database(entities = {
-    AppsEntity.class,
+    AppEntity.class,
 }, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
   private final static String DATABASE_NAME = "apps";
