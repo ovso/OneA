@@ -20,6 +20,7 @@ public class MarketPresenterImpl extends DisposablePresenter implements MarketPr
   private final LifecycleOwner lifecycleOwner;
   private AtomicInteger itemId;
   private int checkedMarketIndex;
+  private String emailText = "";
 
   MarketPresenterImpl(MarketPresenter.View $view, LifecycleOwner lifecycleOwner) {
     this.view = $view;
@@ -71,6 +72,14 @@ public class MarketPresenterImpl extends DisposablePresenter implements MarketPr
 
   @Override public void onMarketCheckedChange(int checkedId) {
     checkedMarketIndex = checkedId;
+  }
+
+  @Override public void onConfirmClick() {
+
+  }
+
+  @Override public void onEmailTextChanged(String text) {
+    emailText = text;
   }
 
   @Getter @Setter public static class MarketInfo {

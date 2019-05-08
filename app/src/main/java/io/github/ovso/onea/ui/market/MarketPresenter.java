@@ -8,6 +8,10 @@ public interface MarketPresenter {
 
   void onMarketCheckedChange(int checkedId);
 
+  void onConfirmClick();
+
+  void onEmailTextChanged(String text);
+
   interface View {
 
     void addRadioButton(int viewId, String text);
