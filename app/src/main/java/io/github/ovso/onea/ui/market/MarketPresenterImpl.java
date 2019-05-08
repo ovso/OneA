@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.Getter;
 import lombok.Setter;
+import timber.log.Timber;
 
 public class MarketPresenterImpl extends DisposablePresenter implements MarketPresenter {
 
@@ -18,6 +19,7 @@ public class MarketPresenterImpl extends DisposablePresenter implements MarketPr
   private final AppDatabase appDb;
   private final LifecycleOwner lifecycleOwner;
   private AtomicInteger itemId;
+  private int checkedMarketIndex;
 
   MarketPresenterImpl(MarketPresenter.View $view, LifecycleOwner lifecycleOwner) {
     this.view = $view;
@@ -27,14 +29,24 @@ public class MarketPresenterImpl extends DisposablePresenter implements MarketPr
   }
 
   @Override public void onCreate() {
-    view.setupRadioGroup();
+    reqMarkets();
+  }
+
+  private void reqMarkets() {
     addDisposable(
         Observable.fromArray(MarketType.values())
             .map(this::handleMarketInfo)
             .subscribeOn(schedulers.io())
             .observeOn(schedulers.ui())
-            .subscribe(this::consumer)
+            .subscribe(
+                this::consumerForReqMarkets,
+                Timber::e,
+                this::completeForReqMarkets)
     );
+  }
+
+  private void completeForReqMarkets() {
+    view.setupRadioGroup();
   }
 
   private MarketInfo handleMarketInfo(MarketType marketType) {
@@ -46,8 +58,7 @@ public class MarketPresenterImpl extends DisposablePresenter implements MarketPr
     return marketInfo;
   }
 
-  //앱 마켓 이름, 단말에 설치된 앱 수, 설치된 앱들의 apk tsize 합
-  private void consumer(MarketInfo marketInfo) {
+  private void consumerForReqMarkets(MarketInfo marketInfo) {
     int viewId = itemId.incrementAndGet();
     String text = String.format("%s, %s개, %sKB",
         marketInfo.name, marketInfo.count, (marketInfo.tsize / 1024));
@@ -56,6 +67,10 @@ public class MarketPresenterImpl extends DisposablePresenter implements MarketPr
 
   @Override public void onDestroy() {
     clearDisposable();
+  }
+
+  @Override public void onMarketCheckedChange(int checkedId) {
+    checkedMarketIndex = checkedId;
   }
 
   @Getter @Setter public static class MarketInfo {

@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 import butterknife.BindView;
 import io.github.ovso.onea.R;
 import io.github.ovso.onea.ui.base.BaseActivity;
-import timber.log.Timber;
+import io.github.ovso.onea.ui.utils.MarketType;
 
 public class MarketActivity extends BaseActivity implements MarketPresenter.View {
   @BindView(R.id.radiogroup_market) RadioGroup marketRadioGroup;
@@ -35,8 +35,8 @@ public class MarketActivity extends BaseActivity implements MarketPresenter.View
   }
 
   @Override public void setupRadioGroup() {
-    marketRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
-      Timber.d("checkedId = %s", checkedId);
-    });
+    marketRadioGroup.check(MarketType.ONE_STORE.ordinal());
+    marketRadioGroup.setOnCheckedChangeListener(
+        (group, checkedId) -> presenter.onMarketCheckedChange(checkedId));
   }
 }

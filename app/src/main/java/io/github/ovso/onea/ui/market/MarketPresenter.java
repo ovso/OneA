@@ -6,6 +6,8 @@ public interface MarketPresenter {
 
   void onDestroy();
 
+  void onMarketCheckedChange(int checkedId);
+
   interface View {
 
     void addRadioButton(int viewId, String text);
