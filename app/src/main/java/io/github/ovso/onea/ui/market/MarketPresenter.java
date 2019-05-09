@@ -21,5 +21,7 @@ public interface MarketPresenter {
     void enableConfirmButton(boolean enable);
 
     void setupUserEmail(String userEmail);
+
+    void navigateToExtra();
   }
 }

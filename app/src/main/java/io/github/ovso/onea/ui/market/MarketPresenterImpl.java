@@ -1,6 +1,6 @@
 package io.github.ovso.onea.ui.market;
 
-import androidx.lifecycle.LifecycleOwner;
+import android.text.TextUtils;
 import io.github.ovso.onea.App;
 import io.github.ovso.onea.data.db.AppDatabase;
 import io.github.ovso.onea.data.db.model.AppEntity;
@@ -29,8 +29,9 @@ public class MarketPresenterImpl extends DisposablePresenter implements MarketPr
   }
 
   @Override public void onCreate() {
-    view.setupUserEmail(UserAccountFetcher.getEmail(App.getInstance()));
-    view.enableConfirmButton(false);
+    String email = UserAccountFetcher.getEmail(App.getInstance());
+    view.setupUserEmail(email);
+    view.enableConfirmButton(!TextUtils.isEmpty(email));
     reqMarkets();
   }
 
@@ -76,11 +77,12 @@ public class MarketPresenterImpl extends DisposablePresenter implements MarketPr
   }
 
   @Override public void onConfirmClick() {
-
+    view.navigateToExtra();
   }
 
-  @Override public void onEmailTextChanged(String text) {
-    emailText = text;
+  @Override public void onEmailTextChanged(String email) {
+    emailText = email;
+    view.enableConfirmButton(UserAccountFetcher.isValidEmail(email));
   }
 
   @Getter @Setter public static class MarketInfo {
