@@ -5,6 +5,7 @@ import io.github.ovso.onea.App;
 import io.github.ovso.onea.R;
 import io.github.ovso.onea.data.HeaderInfo;
 import io.github.ovso.onea.ui.base.DisposablePresenter;
+import io.github.ovso.onea.ui.utils.MarketType;
 import io.github.ovso.onea.ui.utils.SimOperator;
 import java.util.Arrays;
 import java.util.List;
@@ -13,6 +14,7 @@ public class ExtraPresenterImpl extends DisposablePresenter implements ExtraPres
 
   private final View view;
   private List<String> items;
+  private HeaderInfo header;
 
   ExtraPresenterImpl(ExtraPresenter.View view) {
     this.view = view;
@@ -22,7 +24,14 @@ public class ExtraPresenterImpl extends DisposablePresenter implements ExtraPres
   }
 
   @Override public void onItemClick(int position) {
+    sendEvent();
     view.navigateToExtraInfo();
+  }
+
+  private void sendEvent() {
+    App.getInstance().getRxBus().send(
+        header
+    );
   }
 
   @Override public void onPause() {
@@ -33,7 +42,7 @@ public class ExtraPresenterImpl extends DisposablePresenter implements ExtraPres
     addDisposable(
         App.getInstance().getRxBus().toObservable().subscribe(o -> {
           if ((o instanceof HeaderInfo)) {
-            HeaderInfo header = (HeaderInfo) o;
+            header = (HeaderInfo) o;
             view.setupHeader(header);
             items = getItems(header.getOperatorType());
             view.setupRecyclerView(header.getOperatorType(), items);
