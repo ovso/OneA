@@ -84,8 +84,8 @@ public class MarketPresenterImpl extends DisposablePresenter implements MarketPr
   }
 
   private void sendEvent() {
-    SimOperator.Type type = SimOperator.toType(SimOperator.getOperator(App.getInstance()));
-    type = SimOperator.Type.SKT;
+    //SimOperator.Type type = SimOperator.toType(SimOperator.getOperator(App.getInstance()));
+    SimOperator.Type type = SimOperator.Type.SKT;
     App.getInstance().getRxBus().send(
         RxBusHeaderInfo.builder()
             .email(emailText)
@@ -100,7 +100,7 @@ public class MarketPresenterImpl extends DisposablePresenter implements MarketPr
     view.enableConfirmButton(UserAccountFetcher.isValidEmail(email));
   }
 
-  @Getter @Setter public static class MarketInfo {
+  @Getter @Setter private static class MarketInfo {
     private String name;
     private int count;
     private long tsize;

@@ -3,4 +3,6 @@
   <string name="market_title">선호하는 앱 마켓을 선택해 주세요</string>
   <string name="market_email">Email :</string>
   <string name="market_confirm">확인</string>
+  <string name="extra_info_not_found_operator">통신사를 확인할 수 없습니다.</string>
+  <string name="extra_info_register">등록</string>
 </resources>

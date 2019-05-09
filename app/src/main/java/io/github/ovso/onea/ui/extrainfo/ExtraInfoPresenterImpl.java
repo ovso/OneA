@@ -29,6 +29,7 @@ public class ExtraInfoPresenterImpl extends DisposablePresenter implements Extra
             RxBusExtraInfo info = (RxBusExtraInfo) o;
             view.setupHeader(info.getHeaderInfo());
             view.setupExtraInfo(info.getService());
+            view.changeLayoutGravityForRegisterButton(info.getHeaderInfo().getOperatorType());
           }
         })
     );
