@@ -8,6 +8,7 @@
     >
   <include layout="@layout/layout_all_header"/>
   <FrameLayout
+      android:id="@+id/framelayout_extra_info_content"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       >

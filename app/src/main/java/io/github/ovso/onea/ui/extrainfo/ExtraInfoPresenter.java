@@ -5,9 +5,15 @@ import io.github.ovso.onea.ui.utils.SimOperator;
 
 public interface ExtraInfoPresenter {
 
-  void onPause();
+  void onRegisterClick();
 
-  void onResume();
+  void onDialogCloseClick();
+
+  void onDialogCancelClick();
+
+  void onCreate();
+
+  void onDestroy();
 
   interface View {
 
@@ -20,5 +26,9 @@ public interface ExtraInfoPresenter {
     void showRegisterButton();
 
     void changeLayoutGravityForRegisterButton(SimOperator.Type operatorType);
+
+    void showRegisterDialog();
+
+    void changeTimeRemaining(int time);
   }
 }

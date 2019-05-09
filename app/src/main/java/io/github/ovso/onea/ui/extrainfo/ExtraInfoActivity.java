@@ -1,12 +1,15 @@
 package io.github.ovso.onea.ui.extrainfo;
 
+import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import butterknife.BindView;
+import butterknife.OnClick;
 import io.github.ovso.onea.R;
 import io.github.ovso.onea.data.rx.dto.RxBusHeaderInfo;
 import io.github.ovso.onea.ui.base.BaseActivity;
@@ -20,19 +23,21 @@ public class ExtraInfoActivity extends BaseActivity implements ExtraInfoPresente
   @BindView(R.id.button_extra_info_register) Button registerButton;
 
   private ExtraInfoPresenter presenter = new ExtraInfoPresenterImpl(this);
+  private AlertDialog dialog;
+  private TextView dialogMsgTextView;
+
+  @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    presenter.onCreate();
+  }
+
+  @Override protected void onDestroy() {
+    super.onDestroy();
+    presenter.onDestroy();
+  }
 
   @Override protected int getLayoutResId() {
     return R.layout.activity_extra_info;
-  }
-
-  @Override protected void onResume() {
-    super.onResume();
-    presenter.onResume();
-  }
-
-  @Override protected void onPause() {
-    super.onPause();
-    presenter.onPause();
   }
 
   @Override public void setupHeader(RxBusHeaderInfo header) {
@@ -59,6 +64,23 @@ public class ExtraInfoActivity extends BaseActivity implements ExtraInfoPresente
     param.gravity = getGravityForRegisterButton(operatorType);
   }
 
+  @Override public void showRegisterDialog() {
+    dialog = new AlertDialog.Builder(this)
+        .setMessage(getString(R.string.extra_info_dialog_msg))
+        .setCancelable(false)
+        .setNegativeButton(R.string.extra_info_close_button,
+            (dialogInterface, which) -> presenter.onDialogCloseClick())
+        .setNeutralButton(R.string.extra_info_cancel_button,
+            (dialogInterface, which) -> presenter.onDialogCancelClick()).show();
+    dialogMsgTextView = ((TextView) dialog.findViewById(android.R.id.message));
+  }
+
+  @Override public void changeTimeRemaining(int time) {
+    if (dialogMsgTextView != null) {
+      dialogMsgTextView.setText(String.format(getString(R.string.extra_info_dialog_msg), time));
+    }
+  }
+
   private int getGravityForRegisterButton(SimOperator.Type operatorType) {
     int gravity = 0;
     switch (operatorType) {
@@ -73,5 +95,9 @@ public class ExtraInfoActivity extends BaseActivity implements ExtraInfoPresente
         break;
     }
     return gravity;
+  }
+
+  @OnClick(R.id.button_extra_info_register) void onRegisterClick() {
+    presenter.onRegisterClick();
   }
 }
