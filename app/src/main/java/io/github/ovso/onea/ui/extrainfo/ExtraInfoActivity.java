@@ -1,5 +1,13 @@
 package io.github.ovso.onea.ui.extrainfo;
 
+import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -8,6 +16,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.NotificationCompat;
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.github.ovso.onea.R;
@@ -72,13 +81,44 @@ public class ExtraInfoActivity extends BaseActivity implements ExtraInfoPresente
             (dialogInterface, which) -> presenter.onDialogCloseClick())
         .setNeutralButton(R.string.extra_info_cancel_button,
             (dialogInterface, which) -> presenter.onDialogCancelClick()).show();
-    dialogMsgTextView = ((TextView) dialog.findViewById(android.R.id.message));
+    dialogMsgTextView = dialog.findViewById(android.R.id.message);
   }
 
   @Override public void changeDialogMessage(String msg) {
     if (dialogMsgTextView != null) {
       dialogMsgTextView.setText(msg);
     }
+  }
+
+  @SuppressLint("WrongConstant") @Override public void showNotification() {
+    Resources res = getResources();
+
+    Intent notificationIntent = new Intent(this, ExtraInfoActivity.class);
+    notificationIntent.putExtra("notificationId", 9999); //전달할 값
+    PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+    NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+
+    builder.setContentTitle("상태바 드래그시 보이는 타이틀")
+        .setContentText("상태바 드래그시 보이는 서브타이틀")
+        .setTicker("상태바 한줄 메시지")
+        .setSmallIcon(R.mipmap.ic_launcher)
+        .setLargeIcon(BitmapFactory.decodeResource(res, R.mipmap.ic_launcher))
+        .setContentIntent(contentIntent)
+        .setAutoCancel(true)
+        .setWhen(System.currentTimeMillis())
+        .setDefaults(Notification.DEFAULT_ALL);
+
+
+
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+      builder.setCategory(Notification.CATEGORY_MESSAGE)
+          .setPriority(Notification.PRIORITY_HIGH)
+          .setVisibility(Notification.VISIBILITY_PUBLIC);
+    }
+
+    NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+    nm.notify(1234, builder.build());
   }
 
   private int getGravityForRegisterButton(SimOperator.Type operatorType) {

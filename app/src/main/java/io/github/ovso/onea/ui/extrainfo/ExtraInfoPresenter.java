@@ -30,5 +30,7 @@ public interface ExtraInfoPresenter {
     void showRegisterDialog();
 
     void changeDialogMessage(String msg);
+
+    void showNotification();
   }
 }

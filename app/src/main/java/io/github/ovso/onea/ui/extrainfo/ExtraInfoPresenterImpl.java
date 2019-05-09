@@ -7,6 +7,8 @@ import io.github.ovso.onea.data.rx.RxBus;
 import io.github.ovso.onea.data.rx.dto.RxBusExtraInfo;
 import io.github.ovso.onea.ui.base.DisposablePresenter;
 import java.util.concurrent.atomic.AtomicInteger;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import timber.log.Timber;
 
 public class ExtraInfoPresenterImpl extends DisposablePresenter implements ExtraInfoPresenter {
@@ -15,6 +17,7 @@ public class ExtraInfoPresenterImpl extends DisposablePresenter implements Extra
   private CountDownTimer timer;
   private AtomicInteger time = new AtomicInteger(15);
   private RxBusExtraInfo info;
+  private TimerStatus timerStatus = TimerStatus.FINISH;
 
   ExtraInfoPresenterImpl(ExtraInfoPresenter.View view) {
     this.view = view;
@@ -32,6 +35,7 @@ public class ExtraInfoPresenterImpl extends DisposablePresenter implements Extra
         view.changeDialogMessage(msg);
 
         time.decrementAndGet();
+        timerStatus = TimerStatus.TICK;
       }
 
       @Override public void onFinish() {
@@ -41,6 +45,7 @@ public class ExtraInfoPresenterImpl extends DisposablePresenter implements Extra
             info.getHeaderInfo().getEmail()
         );
         view.changeDialogMessage(msg);
+        timerStatus = TimerStatus.FINISH;
       }
     };
   }
@@ -58,11 +63,23 @@ public class ExtraInfoPresenterImpl extends DisposablePresenter implements Extra
     if (timer != null) {
       time.set(15);
       timer.start();
+      timerStatus = TimerStatus.START;
     }
   }
 
   @Override public void onDialogCloseClick() {
-    cancelTimer();
+    switch (timerStatus) {
+
+      case START:
+        break;
+      case TICK:
+        // 노티
+        view.showNotification();
+        break;
+      case FINISH:
+        //앱 종료
+        break;
+    }
   }
 
   private void cancelTimer() {
@@ -87,5 +104,9 @@ public class ExtraInfoPresenterImpl extends DisposablePresenter implements Extra
           }
         })
     );
+  }
+
+  @AllArgsConstructor @Getter enum TimerStatus {
+    START, TICK, FINISH
   }
 }
