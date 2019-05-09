@@ -1,6 +1,8 @@
 package io.github.ovso.onea.ui.market;
 
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import androidx.annotation.Nullable;
@@ -13,7 +15,10 @@ import io.github.ovso.onea.ui.utils.MarketType;
 
 public class MarketActivity extends BaseActivity implements MarketPresenter.View {
   @BindView(R.id.radiogroup_market) RadioGroup marketRadioGroup;
-  private MarketPresenter presenter = new MarketPresenterImpl(this, this);
+  @BindView(R.id.button_market_confirm) Button confirmButton;
+  @BindView(R.id.edittext_market_email) EditText emailEditText;
+  private MarketPresenter presenter =
+      new MarketPresenterImpl(this);
 
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -40,6 +45,14 @@ public class MarketActivity extends BaseActivity implements MarketPresenter.View
     marketRadioGroup.check(MarketType.ONE_STORE.ordinal());
     marketRadioGroup.setOnCheckedChangeListener(
         (group, checkedId) -> presenter.onMarketCheckedChange(checkedId));
+  }
+
+  @Override public void enableConfirmButton(boolean enable) {
+    confirmButton.setEnabled(enable);
+  }
+
+  @Override public void setupUserEmail(String userEmail) {
+    emailEditText.setText(userEmail);
   }
 
   @OnClick(R.id.button_market_confirm) void onConfirmClikc() {

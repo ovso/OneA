@@ -6,6 +6,7 @@ import io.github.ovso.onea.data.db.AppDatabase;
 import io.github.ovso.onea.data.db.model.AppEntity;
 import io.github.ovso.onea.ui.base.DisposablePresenter;
 import io.github.ovso.onea.ui.utils.MarketType;
+import io.github.ovso.onea.ui.utils.UserAccountFetcher;
 import io.reactivex.Observable;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -17,19 +18,19 @@ public class MarketPresenterImpl extends DisposablePresenter implements MarketPr
 
   private final View view;
   private final AppDatabase appDb;
-  private final LifecycleOwner lifecycleOwner;
   private AtomicInteger itemId;
   private int checkedMarketIndex;
   private String emailText = "";
 
-  MarketPresenterImpl(MarketPresenter.View $view, LifecycleOwner lifecycleOwner) {
-    this.view = $view;
-    this.lifecycleOwner = lifecycleOwner;
+  MarketPresenterImpl(MarketPresenter.View view) {
+    this.view = view;
     appDb = App.getInstance().getAppDb();
     itemId = new AtomicInteger(-1);
   }
 
   @Override public void onCreate() {
+    view.setupUserEmail(UserAccountFetcher.getEmail(App.getInstance()));
+    view.enableConfirmButton(false);
     reqMarkets();
   }
 
