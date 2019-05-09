@@ -3,18 +3,20 @@ package io.github.ovso.onea.ui.extra;
 import android.content.res.Resources;
 import io.github.ovso.onea.App;
 import io.github.ovso.onea.R;
-import io.github.ovso.onea.data.HeaderInfo;
+import io.github.ovso.onea.data.rx.dto.RxBusExtraInfo;
+import io.github.ovso.onea.data.rx.dto.RxBusHeaderInfo;
+import io.github.ovso.onea.data.rx.RxBus;
 import io.github.ovso.onea.ui.base.DisposablePresenter;
-import io.github.ovso.onea.ui.utils.MarketType;
 import io.github.ovso.onea.ui.utils.SimOperator;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class ExtraPresenterImpl extends DisposablePresenter implements ExtraPresenter {
 
   private final View view;
-  private List<String> items;
-  private HeaderInfo header;
+  private List<String> items = new ArrayList<>();
+  private RxBusHeaderInfo header;
 
   ExtraPresenterImpl(ExtraPresenter.View view) {
     this.view = view;
@@ -24,14 +26,13 @@ public class ExtraPresenterImpl extends DisposablePresenter implements ExtraPres
   }
 
   @Override public void onItemClick(int position) {
-    sendEvent();
+    sendEvent(position);
     view.navigateToExtraInfo();
   }
 
-  private void sendEvent() {
-    App.getInstance().getRxBus().send(
-        header
-    );
+  private void sendEvent(int position) {
+    RxBus rxBus = App.getInstance().getRxBus();
+    rxBus.send(RxBusExtraInfo.builder().headerInfo(header).service(items.get(position)).build());
   }
 
   @Override public void onPause() {
@@ -41,10 +42,11 @@ public class ExtraPresenterImpl extends DisposablePresenter implements ExtraPres
   @Override public void onResume() {
     addDisposable(
         App.getInstance().getRxBus().toObservable().subscribe(o -> {
-          if ((o instanceof HeaderInfo)) {
-            header = (HeaderInfo) o;
+          if ((o instanceof RxBusHeaderInfo)) {
+            header = (RxBusHeaderInfo) o;
             view.setupHeader(header);
-            items = getItems(header.getOperatorType());
+            items.clear();
+            items.addAll(getItems(header.getOperatorType()));
             view.setupRecyclerView(header.getOperatorType(), items);
           }
         })

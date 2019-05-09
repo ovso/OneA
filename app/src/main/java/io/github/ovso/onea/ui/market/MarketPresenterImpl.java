@@ -2,7 +2,7 @@ package io.github.ovso.onea.ui.market;
 
 import android.text.TextUtils;
 import io.github.ovso.onea.App;
-import io.github.ovso.onea.data.HeaderInfo;
+import io.github.ovso.onea.data.rx.dto.RxBusHeaderInfo;
 import io.github.ovso.onea.data.db.AppDatabase;
 import io.github.ovso.onea.data.db.model.AppEntity;
 import io.github.ovso.onea.ui.base.DisposablePresenter;
@@ -85,8 +85,9 @@ public class MarketPresenterImpl extends DisposablePresenter implements MarketPr
 
   private void sendEvent() {
     SimOperator.Type type = SimOperator.toType(SimOperator.getOperator(App.getInstance()));
+    type = SimOperator.Type.SKT;
     App.getInstance().getRxBus().send(
-        HeaderInfo.builder()
+        RxBusHeaderInfo.builder()
             .email(emailText)
             .operatorType(type)
             .marketType(MarketType.values()[checkedMarketIndex])

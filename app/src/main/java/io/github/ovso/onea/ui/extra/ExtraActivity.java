@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import io.github.ovso.onea.R;
-import io.github.ovso.onea.data.HeaderInfo;
+import io.github.ovso.onea.data.rx.dto.RxBusHeaderInfo;
 import io.github.ovso.onea.ui.base.BaseActivity;
 import io.github.ovso.onea.ui.extrainfo.ExtraInfoActivity;
 import io.github.ovso.onea.ui.utils.SimOperator;
@@ -56,7 +56,7 @@ public class ExtraActivity extends BaseActivity implements ExtraPresenter.View {
     startActivity(new Intent(this, ExtraInfoActivity.class));
   }
 
-  @Override public void setupHeader(HeaderInfo header) {
+  @Override public void setupHeader(RxBusHeaderInfo header) {
     operatorNameTextView.setText(header.getOperatorType().getDisplayName());
     preferMarketTextView.setText(header.getMarketType().getName());
     emailTextView.setText(header.getEmail());

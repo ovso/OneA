@@ -1,6 +1,6 @@
 package io.github.ovso.onea.ui.extrainfo;
 
-import io.github.ovso.onea.data.HeaderInfo;
+import io.github.ovso.onea.data.rx.dto.RxBusHeaderInfo;
 
 public interface ExtraInfoPresenter {
 
@@ -10,6 +10,8 @@ public interface ExtraInfoPresenter {
 
   interface View {
 
-    void setupHeader(HeaderInfo header);
+    void setupHeader(RxBusHeaderInfo header);
+
+    void setupExtraInfo(String extra);
   }
 }

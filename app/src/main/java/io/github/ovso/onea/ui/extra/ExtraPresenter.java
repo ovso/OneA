@@ -1,6 +1,6 @@
 package io.github.ovso.onea.ui.extra;
 
-import io.github.ovso.onea.data.HeaderInfo;
+import io.github.ovso.onea.data.rx.dto.RxBusHeaderInfo;
 import io.github.ovso.onea.ui.utils.SimOperator;
 import java.util.List;
 
@@ -19,6 +19,6 @@ public interface ExtraPresenter {
 
     void navigateToExtraInfo();
 
-    void setupHeader(HeaderInfo header);
+    void setupHeader(RxBusHeaderInfo header);
   }
 }
