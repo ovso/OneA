@@ -75,9 +75,9 @@ public class ExtraInfoActivity extends BaseActivity implements ExtraInfoPresente
     dialogMsgTextView = ((TextView) dialog.findViewById(android.R.id.message));
   }
 
-  @Override public void changeTimeRemaining(int time) {
+  @Override public void changeDialogMessage(String msg) {
     if (dialogMsgTextView != null) {
-      dialogMsgTextView.setText(String.format(getString(R.string.extra_info_dialog_msg), time));
+      dialogMsgTextView.setText(msg);
     }
   }
 

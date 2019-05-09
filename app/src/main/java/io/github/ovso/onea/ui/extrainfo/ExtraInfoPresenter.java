@@ -29,6 +29,6 @@ public interface ExtraInfoPresenter {
 
     void showRegisterDialog();
 
-    void changeTimeRemaining(int time);
+    void changeDialogMessage(String msg);
   }
 }

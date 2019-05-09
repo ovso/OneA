@@ -2,6 +2,7 @@ package io.github.ovso.onea.ui.extrainfo;
 
 import android.os.CountDownTimer;
 import io.github.ovso.onea.App;
+import io.github.ovso.onea.R;
 import io.github.ovso.onea.data.rx.RxBus;
 import io.github.ovso.onea.data.rx.dto.RxBusExtraInfo;
 import io.github.ovso.onea.ui.base.DisposablePresenter;
@@ -13,6 +14,7 @@ public class ExtraInfoPresenterImpl extends DisposablePresenter implements Extra
   private final View view;
   private CountDownTimer timer;
   private AtomicInteger time = new AtomicInteger(15);
+  private RxBusExtraInfo info;
 
   ExtraInfoPresenterImpl(ExtraInfoPresenter.View view) {
     this.view = view;
@@ -23,12 +25,22 @@ public class ExtraInfoPresenterImpl extends DisposablePresenter implements Extra
     timer = new CountDownTimer(15000, 1000) {
       @Override public void onTick(long millisUntilFinished) {
         Timber.d("onTick(%s)", time.get());
-        view.changeTimeRemaining(time.get());
+        String msg = String.format(
+            App.getInstance().getString(R.string.extra_info_dialog_msg),
+            time.get()
+        );
+        view.changeDialogMessage(msg);
+
         time.decrementAndGet();
       }
 
       @Override public void onFinish() {
         Timber.d("onFinish = %s", time.get());
+        String msg = String.format(
+            App.getInstance().getString(R.string.extra_info_dialog_msg_complete),
+            info.getHeaderInfo().getEmail()
+        );
+        view.changeDialogMessage(msg);
       }
     };
   }
@@ -68,7 +80,7 @@ public class ExtraInfoPresenterImpl extends DisposablePresenter implements Extra
     addDisposable(
         rxBus.toObservable().subscribe(o -> {
           if (o instanceof RxBusExtraInfo) {
-            RxBusExtraInfo info = (RxBusExtraInfo) o;
+            info = ((RxBusExtraInfo) o);
             view.setupHeader(info.getHeaderInfo());
             view.setupExtraInfo(info.getService());
             view.changeLayoutGravityForRegisterButton(info.getHeaderInfo().getOperatorType());
