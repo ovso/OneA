@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string-array name="extras">
+    <item>부가서비스 1</item>
+    <item>부가서비스 2</item>
+    <item>부가서비스 3</item>
+    <item>부가서비스 4</item>
+    <item>부가서비스 5</item>
+  </string-array>
+  <string-array name="extras_na">
+    <item>이용 가능한 부가서비스가 없습니다.</item>
+  </string-array>
+</resources>

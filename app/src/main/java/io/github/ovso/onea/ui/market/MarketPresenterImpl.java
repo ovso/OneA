@@ -2,10 +2,12 @@ package io.github.ovso.onea.ui.market;
 
 import android.text.TextUtils;
 import io.github.ovso.onea.App;
+import io.github.ovso.onea.data.HeaderInfo;
 import io.github.ovso.onea.data.db.AppDatabase;
 import io.github.ovso.onea.data.db.model.AppEntity;
 import io.github.ovso.onea.ui.base.DisposablePresenter;
 import io.github.ovso.onea.ui.utils.MarketType;
+import io.github.ovso.onea.ui.utils.SimOperator;
 import io.github.ovso.onea.ui.utils.UserAccountFetcher;
 import io.reactivex.Observable;
 import java.util.List;
@@ -77,7 +79,19 @@ public class MarketPresenterImpl extends DisposablePresenter implements MarketPr
   }
 
   @Override public void onConfirmClick() {
+    sendEvent();
     view.navigateToExtra();
+  }
+
+  private void sendEvent() {
+    SimOperator.Type type = SimOperator.toType(SimOperator.getOperator(App.getInstance()));
+    App.getInstance().getRxBus().send(
+        HeaderInfo.builder()
+            .email(emailText)
+            .operatorType(type)
+            .marketType(MarketType.values()[checkedMarketIndex])
+            .build()
+    );
   }
 
   @Override public void onEmailTextChanged(String email) {
