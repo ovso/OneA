@@ -7,7 +7,6 @@ import io.github.ovso.onea.R;
 import io.github.ovso.onea.data.rx.RxBus;
 import io.github.ovso.onea.data.rx.dto.RxBusExtraInfo;
 import io.github.ovso.onea.ui.base.DisposablePresenter;
-import io.github.ovso.onea.ui.market.MarketPresenterImpl;
 import io.github.ovso.onea.utils.BataTime;
 import io.github.ovso.onea.utils.BataTimeCallback;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -91,7 +90,7 @@ public class ExtraInfoPresenterImpl extends DisposablePresenter implements Extra
   private void toRxBusObservable() {
     RxBus rxBus = App.getInstance().getRxBus();
     addDisposable(
-        rxBus.toBsObservable().subscribe(o -> {
+        rxBus.toObservable().subscribe(o -> {
           if (o instanceof RxBusExtraInfo) {
             info = ((RxBusExtraInfo) o);
             view.setupHeader(info.getHeaderInfo());

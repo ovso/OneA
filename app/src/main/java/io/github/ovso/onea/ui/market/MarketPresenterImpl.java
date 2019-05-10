@@ -12,7 +12,6 @@ import io.github.ovso.onea.ui.utils.UserAccountFetcher;
 import io.reactivex.Observable;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import timber.log.Timber;
@@ -85,9 +84,9 @@ public class MarketPresenterImpl extends DisposablePresenter implements MarketPr
   }
 
   private void sendEvent() {
-    //SimOperator.Type type = SimOperator.toType(SimOperator.getOperator(App.getInstance()));
-    SimOperator.Type type = SimOperator.Type.SKT;
-    App.getInstance().getRxBus().sendBs(
+    SimOperator.Type type = SimOperator.toType(SimOperator.getOperator(App.getInstance()));
+    //SimOperator.Type type = SimOperator.Type.SKT;
+    App.getInstance().getRxBus().send(
         RxBusHeaderInfo.builder()
             .email(emailText)
             .operatorType(type)

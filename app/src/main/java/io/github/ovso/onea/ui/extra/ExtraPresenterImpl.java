@@ -32,7 +32,7 @@ public class ExtraPresenterImpl extends DisposablePresenter implements ExtraPres
 
   private void sendEvent(int position) {
     RxBus rxBus = App.getInstance().getRxBus();
-    rxBus.sendBs(RxBusExtraInfo.builder().headerInfo(header).service(items.get(position)).build());
+    rxBus.send(RxBusExtraInfo.builder().headerInfo(header).service(items.get(position)).build());
   }
 
   @Override public void onPause() {
@@ -41,7 +41,7 @@ public class ExtraPresenterImpl extends DisposablePresenter implements ExtraPres
 
   @Override public void onResume() {
     addDisposable(
-        App.getInstance().getRxBus().toBsObservable().subscribe(o -> {
+        App.getInstance().getRxBus().toObservable().subscribe(o -> {
           if ((o instanceof RxBusHeaderInfo)) {
             header = (RxBusHeaderInfo) o;
             view.setupHeader(header);
