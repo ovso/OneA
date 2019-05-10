@@ -78,15 +78,15 @@ public class RegisterService extends Service {
     notification = builder.build();
     startForeground(NOTI_ID, notification);
 
-    new CountDownTimer($time * 1000, 1000) {
+    new CountDownTimer(($time) * 1000, 1000) {
       @Override public void onTick(long millisUntilFinished) {
+        time.decrementAndGet();
         Timber.d("onTick = %s", time.get());
         remoteViews.setTextViewText(
             R.id.textview_notification_time,
             String.format(getString(R.string.extra_info_dialog_msg), time.get())
         );
         notificationManager.notify(NOTI_ID, notification);
-        time.decrementAndGet();
       }
 
       @Override public void onFinish() {
