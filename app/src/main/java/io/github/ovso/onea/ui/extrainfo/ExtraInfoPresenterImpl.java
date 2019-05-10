@@ -74,7 +74,7 @@ public class ExtraInfoPresenterImpl extends DisposablePresenter implements Extra
         break;
       case TICK:
         // 노티
-        view.showNotification();
+        view.showNotification(time.get());
         break;
       case FINISH:
         //앱 종료

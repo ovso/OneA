@@ -31,6 +31,6 @@ public interface ExtraInfoPresenter {
 
     void changeDialogMessage(String msg);
 
-    void showNotification();
+    void showNotification(int time);
   }
 }
