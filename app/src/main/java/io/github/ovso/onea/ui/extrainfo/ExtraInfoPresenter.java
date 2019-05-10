@@ -31,6 +31,6 @@ public interface ExtraInfoPresenter {
 
     void changeDialogMessage(String msg);
 
-    void startForegroundService(int time);
+    void startForegroundService(int time, String email);
   }
 }

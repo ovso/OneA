@@ -21,7 +21,7 @@ public class ExtraInfoPresenterImpl extends DisposablePresenter implements Extra
   private AtomicInteger time = new AtomicInteger(MAX_SECOND);
   private RxBusExtraInfo info;
   private TimerStatus timerStatus = TimerStatus.FINISH;
-  private BataTime timer = new BataTime(1000 * MAX_SECOND, TICK_SECOND);
+  private BataTime timer;
 
   ExtraInfoPresenterImpl(ExtraInfoPresenter.View view) {
     this.view = view;
@@ -41,6 +41,7 @@ public class ExtraInfoPresenterImpl extends DisposablePresenter implements Extra
   }
 
   private void startTimer() {
+    timer = new BataTime(1000 * MAX_SECOND, TICK_SECOND);
     timer.start(bataTimeCallback);
   }
 
@@ -66,8 +67,8 @@ public class ExtraInfoPresenterImpl extends DisposablePresenter implements Extra
     switch (timerStatus) {
       case TICK:
         // 노티
-        view.startForegroundService(time.get());
         stopTimber();
+        view.startForegroundService(time.get(), info.getHeaderInfo().getEmail());
         break;
       case FINISH:
         //앱 종료

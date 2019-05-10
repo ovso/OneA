@@ -8,15 +8,17 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.os.CountDownTimer;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.widget.RemoteViews;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import io.github.ovso.onea.R;
 import io.github.ovso.onea.ui.extrainfo.ExtraInfoActivity;
+import io.github.ovso.onea.utils.BataTime;
+import io.github.ovso.onea.utils.BataTimeCallback;
 import java.util.concurrent.atomic.AtomicInteger;
-import timber.log.Timber;
 
 public class RegisterService extends Service {
 
@@ -25,6 +27,8 @@ public class RegisterService extends Service {
   private final static int NOTI_ID = 1;
   private Notification notification;
   private String email;
+  private AtomicInteger time = new AtomicInteger(0);
+  private BataTime bataTime;
 
   @Nullable
   @Override
@@ -33,10 +37,10 @@ public class RegisterService extends Service {
   }
 
   @Override public int onStartCommand(Intent intent, int flags, int startId) {
-    int time = intent.getIntExtra("time", 0);
+    time.set(intent.getIntExtra("time", 0));
     email = intent.getStringExtra("email");
-    Timber.d("time = %s", time);
-    startForegroundService(time);
+    bataTime = new BataTime(time.get() * 1000, 1000);
+    startForegroundService();
     return super.onStartCommand(intent, flags, startId);
   }
 
@@ -45,58 +49,55 @@ public class RegisterService extends Service {
     super.onCreate();
   }
 
-  private AtomicInteger time = new AtomicInteger(0);
+  void startForegroundService() {
+    notificationManager = ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE));
+    remoteViews = new RemoteViews(getPackageName(), R.layout.notification_service);
+    refreshNotification(String.format(getString(R.string.extra_info_dialog_msg), time.get()));
+    bataTime.start(bataTimeCallback);
 
-  void startForegroundService(int $time) {
-    time.set($time);
     Intent notificationIntent = new Intent(this, ExtraInfoActivity.class);
     PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
-    remoteViews = new RemoteViews(getPackageName(), R.layout.notification_service);
-
-    remoteViews.setTextViewText(
-        R.id.textview_notification_time,
-        String.format(getString(R.string.extra_info_dialog_msg), $time)
-    );
-    notificationManager = ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE));
     NotificationCompat.Builder builder;
     if (Build.VERSION.SDK_INT >= 26) {
       String CHANNEL_ID = "register_service_channel";
-      NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
+      NotificationChannel channel = new NotificationChannel(
+          CHANNEL_ID,
           "Register Service Channel",
-          NotificationManager.IMPORTANCE_DEFAULT);
-
+          NotificationManager.IMPORTANCE_DEFAULT
+      );
       notificationManager.createNotificationChannel(channel);
 
       builder = new NotificationCompat.Builder(this, CHANNEL_ID);
     } else {
       builder = new NotificationCompat.Builder(this);
     }
-    builder.setSmallIcon(R.mipmap.ic_launcher)
+    notification = builder
+        .setSmallIcon(R.mipmap.ic_launcher)
         .setContent(remoteViews)
-        .setContentIntent(pendingIntent);
-    notification = builder.build();
+        .setContentIntent(pendingIntent).build();
+
     startForeground(NOTI_ID, notification);
-
-    new CountDownTimer(($time) * 1000, 1000) {
-      @Override public void onTick(long millisUntilFinished) {
-        time.decrementAndGet();
-        Timber.d("onTick = %s", time.get());
-        remoteViews.setTextViewText(
-            R.id.textview_notification_time,
-            String.format(getString(R.string.extra_info_dialog_msg), time.get())
-        );
-        notificationManager.notify(NOTI_ID, notification);
-      }
-
-      @Override public void onFinish() {
-        Timber.d("onFinish");
-        remoteViews.setTextViewText(
-            R.id.textview_notification_time,
-            String.format(getString(R.string.extra_info_dialog_msg_complete), email)
-        );
-        notificationManager.notify(NOTI_ID, notification);
-      }
-    }.start();
   }
+
+  private void refreshNotification(String msg) {
+    new Handler(Looper.getMainLooper()).post(() -> {
+      remoteViews.setTextViewText(R.id.textview_notification_time, msg);
+      notificationManager.notify(NOTI_ID, notification);
+    });
+  }
+
+  private BataTimeCallback bataTimeCallback = new BataTimeCallback() {
+    @Override public void onUpdate(int elapsed) {
+      refreshNotification(
+          String.format(getString(R.string.extra_info_dialog_msg), time.getAndDecrement())
+      );
+    }
+
+    @Override public void onComplete() {
+      refreshNotification(
+          String.format(getString(R.string.extra_info_dialog_msg_complete), email)
+      );
+    }
+  };
 }

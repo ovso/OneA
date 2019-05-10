@@ -85,9 +85,12 @@ public class ExtraInfoActivity extends BaseActivity implements ExtraInfoPresente
     }
   }
 
-  @SuppressLint("WrongConstant") @Override public void startForegroundService(int time) {
+  @SuppressLint("WrongConstant") @Override
+  public void startForegroundService(int time, String email) {
     Intent intent = new Intent(this, RegisterService.class);
     intent.putExtra("time", time);
+    intent.putExtra("email", email);
+
     if (Build.VERSION.SDK_INT >= 26) {
       startForegroundService(intent);
     } else {
