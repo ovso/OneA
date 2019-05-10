@@ -32,5 +32,7 @@ public interface ExtraInfoPresenter {
     void changeDialogMessage(String msg);
 
     void startForegroundService(int time, String email);
+
+    void exitApp();
   }
 }

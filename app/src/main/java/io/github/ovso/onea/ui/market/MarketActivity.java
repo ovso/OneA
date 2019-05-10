@@ -62,6 +62,11 @@ public class MarketActivity extends BaseActivity implements MarketPresenter.View
     startActivity(intent);
   }
 
+  @Override public void exitApp() {
+    finishAffinity();
+    finish();
+  }
+
   @OnClick(R.id.button_market_confirm) void onConfirmClikc() {
     presenter.onConfirmClick();
   }

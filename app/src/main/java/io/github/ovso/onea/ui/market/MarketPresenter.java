@@ -23,5 +23,7 @@ public interface MarketPresenter {
     void setupUserEmail(String userEmail);
 
     void navigateToExtra();
+
+    void exitApp();
   }
 }

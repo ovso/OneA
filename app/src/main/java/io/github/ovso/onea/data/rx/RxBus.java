@@ -2,19 +2,25 @@ package io.github.ovso.onea.data.rx;
 
 import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
+import io.reactivex.subjects.PublishSubject;
 
 public final class RxBus {
-  private BehaviorSubject<Object> bus = BehaviorSubject.create();
+  private BehaviorSubject<Object> bsBus = BehaviorSubject.create();
+  private PublishSubject<Object> psBus = PublishSubject.create();
 
-  public void send(Object o) {
-    bus.onNext(o);
+  public void sendBs(Object o) {
+    bsBus.onNext(o);
   }
 
-  public Observable<Object> toObservable() {
-    return bus;
+  public Observable<Object> toBsObservable() {
+    return bsBus;
   }
 
-  public boolean hasObservable() {
-    return bus.hasObservers();
+  public void sendPs(Object o) {
+    psBus.onNext(o);
+  }
+
+  public Observable<Object> toPsObservable() {
+    return psBus;
   }
 }

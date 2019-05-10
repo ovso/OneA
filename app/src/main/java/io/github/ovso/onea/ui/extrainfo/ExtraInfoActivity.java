@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.github.ovso.onea.R;
@@ -96,6 +97,10 @@ public class ExtraInfoActivity extends BaseActivity implements ExtraInfoPresente
     } else {
       startService(intent);
     }
+  }
+
+  @Override public void exitApp() {
+    ActivityCompat.finishAffinity(this);
   }
 
   private int getGravityForRegisterButton(SimOperator.Type operatorType) {
