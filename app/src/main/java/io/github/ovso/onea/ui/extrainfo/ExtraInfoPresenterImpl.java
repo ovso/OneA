@@ -12,10 +12,11 @@ import lombok.Getter;
 import timber.log.Timber;
 
 public class ExtraInfoPresenterImpl extends DisposablePresenter implements ExtraInfoPresenter {
+  private final static int MAX_SECOND = 15;
   private final static String TAG = "ExtraInfoPresenterImpl";
   private final View view;
   private CountDownTimer timer;
-  private AtomicInteger time = new AtomicInteger(15);
+  private AtomicInteger time = new AtomicInteger(MAX_SECOND);
   private RxBusExtraInfo info;
   private TimerStatus timerStatus = TimerStatus.FINISH;
 
@@ -25,7 +26,7 @@ public class ExtraInfoPresenterImpl extends DisposablePresenter implements Extra
 
   @Override public void onCreate() {
     toRxBusObservable();
-    timer = new CountDownTimer(15000, 1000) {
+    timer = new CountDownTimer(1000 * MAX_SECOND, 1000) {
       @Override public void onTick(long millisUntilFinished) {
         Timber.d("onTick(%s)", time.get());
         String msg = String.format(
@@ -74,7 +75,8 @@ public class ExtraInfoPresenterImpl extends DisposablePresenter implements Extra
         break;
       case TICK:
         // 노티
-        view.showNotification(time.get());
+        view.startForegroundService(time.get());
+        timer.cancel();
         break;
       case FINISH:
         //앱 종료

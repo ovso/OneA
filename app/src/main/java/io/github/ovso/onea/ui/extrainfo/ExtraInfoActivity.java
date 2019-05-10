@@ -2,7 +2,6 @@ package io.github.ovso.onea.ui.extrainfo;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -85,14 +84,15 @@ public class ExtraInfoActivity extends BaseActivity implements ExtraInfoPresente
     }
   }
 
-  @SuppressLint("WrongConstant") @Override public void showNotification(int time) {
+  @SuppressLint("WrongConstant") @Override public void startForegroundService(int time) {
     Intent intent = new Intent(this, RegisterService.class);
     intent.putExtra("time", time);
-    if (Build.VERSION.SDK_INT >= 26) {
-      startForegroundService(intent);
-    } else {
-      startService(intent);
-    }
+    startService(intent);
+    //if (Build.VERSION.SDK_INT >= 26) {
+    //  startForegroundService(intent);
+    //} else {
+    //  startService(intent);
+    //}
   }
 
   private int getGravityForRegisterButton(SimOperator.Type operatorType) {
