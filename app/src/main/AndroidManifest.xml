@@ -39,6 +39,13 @@
         android:windowSoftInputMode="adjustResize"/>
 
     <service android:name=".service.RegisterService"/>
+    <receiver android:name=".receiver.TestReceiver">
+      <intent-filter>
+        <action android:name="io.github.ovso.onea"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+      </intent-filter>
+    </receiver>
+
   </application>
 
 </manifest>
