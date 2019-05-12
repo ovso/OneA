@@ -7,7 +7,7 @@ import com.facebook.stetho.Stetho;
 import com.pixplicity.easyprefs.library.Prefs;
 import io.github.ovso.onea.data.db.AppDatabase;
 import io.github.ovso.onea.data.rx.RxBus;
-import io.github.ovso.onea.receiver.TestReceiver;
+import io.github.ovso.onea.receiver.TestDataReceiver;
 import io.github.ovso.onea.utils.Consts;
 import lombok.Getter;
 import timber.log.Timber;
@@ -25,14 +25,15 @@ public class App extends Application {
     Stetho.initializeWithDefaults(this);
     setupTimber();
     setupPrefs();
-    registerReceiver();
+    registerTestReceiver();
   }
 
-  private void registerReceiver() {
+  private void registerTestReceiver() {
     IntentFilter intentFilter = new IntentFilter();
     intentFilter.addCategory("android.intent.category.DEFAULT");
-    intentFilter.addAction(Consts.BR_ACTION_NAME_A);
-    registerReceiver(new TestReceiver(), intentFilter);
+    intentFilter.addAction(Consts.BR_ACTION_DATA);
+    intentFilter.addAction(Consts.BR_ACTION_MODE);
+    registerReceiver(new TestDataReceiver(), intentFilter);
   }
 
   private void setupTimber() {
