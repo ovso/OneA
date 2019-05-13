@@ -13,7 +13,7 @@ import butterknife.OnTextChanged;
 import io.github.ovso.onea.R;
 import io.github.ovso.onea.ui.base.BaseActivity;
 import io.github.ovso.onea.ui.extra.ExtraActivity;
-import io.github.ovso.onea.ui.utils.MarketType;
+import io.github.ovso.onea.utils.MarketType;
 
 public class MarketActivity extends BaseActivity implements MarketPresenter.View {
   @BindView(R.id.radiogroup_market) RadioGroup marketRadioGroup;
@@ -62,16 +62,16 @@ public class MarketActivity extends BaseActivity implements MarketPresenter.View
     startActivity(intent);
   }
 
-  @Override public void exitApp() {
-    finishAffinity();
-    finish();
-  }
-
   @OnClick(R.id.button_market_confirm) void onConfirmClikc() {
     presenter.onConfirmClick();
   }
 
   @OnTextChanged(R.id.edittext_market_email) void onEmailTextChanged(CharSequence s) {
     presenter.onEmailTextChanged(s.toString());
+  }
+
+  @Override protected void onResume() {
+    super.onResume();
+    presenter.onResume();
   }
 }

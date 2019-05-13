@@ -8,27 +8,35 @@ import com.pixplicity.easyprefs.library.Prefs;
 import io.github.ovso.onea.utils.Consts;
 import timber.log.Timber;
 
-public class TestDataReceiver extends BroadcastReceiver {
+public class TestReceiver extends BroadcastReceiver {
   @Override public void onReceive(Context context, Intent intent) {
     switch (checkAction(intent)) {
 
       case DATA:
-        String email = intent.getStringExtra(Consts.BR_KEY_EMAIL);
-        int operator = intent.getIntExtra(Consts.BR_KEY_OPERATOR, 0);
-        Prefs.putInt(Consts.PREFS_KEY_OPERATOR, operator);
-        Prefs.putString(Consts.PREFS_KEY_EMAIL, email);
-        Timber.d("data email = %s", email);
-        Timber.d("data operator = %s", operator);
+        saveData(intent);
         break;
       case MODE:
-        boolean mode = intent.getBooleanExtra(Consts.BR_KEY_MODE, false);
-        Prefs.putBoolean(Consts.PREFS_KEY_MODE, mode);
-        Timber.d("mode = %s", mode);
+        saveMode(intent);
         break;
       case UNKNOWN:
         Timber.d("Unsuppored action");
         break;
     }
+  }
+
+  private void saveMode(Intent intent) {
+    boolean mode = intent.getBooleanExtra(Consts.BR_KEY_MODE, false);
+    Prefs.putBoolean(Consts.PREFS_KEY_MODE, mode);
+    Timber.d("mode = %s", mode);
+  }
+
+  private void saveData(Intent intent) {
+    String email = intent.getStringExtra(Consts.BR_KEY_EMAIL);
+    int operator = intent.getIntExtra(Consts.BR_KEY_OPERATOR, 0);
+    Prefs.putInt(Consts.PREFS_KEY_OPERATOR, operator);
+    Prefs.putString(Consts.PREFS_KEY_EMAIL, email);
+    Timber.d("data email = %s", email);
+    Timber.d("data operator = %s", operator);
   }
 
   private Action checkAction(Intent intent) {

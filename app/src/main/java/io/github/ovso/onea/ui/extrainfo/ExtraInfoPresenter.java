@@ -1,7 +1,7 @@
 package io.github.ovso.onea.ui.extrainfo;
 
 import io.github.ovso.onea.data.rx.dto.RxBusHeaderInfo;
-import io.github.ovso.onea.ui.utils.SimOperator;
+import io.github.ovso.onea.utils.SimOperator;
 
 public interface ExtraInfoPresenter {
 

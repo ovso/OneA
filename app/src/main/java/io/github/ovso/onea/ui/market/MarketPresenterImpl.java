@@ -1,14 +1,16 @@
 package io.github.ovso.onea.ui.market;
 
 import android.text.TextUtils;
+import com.pixplicity.easyprefs.library.Prefs;
 import io.github.ovso.onea.App;
 import io.github.ovso.onea.data.rx.dto.RxBusHeaderInfo;
 import io.github.ovso.onea.data.db.AppDatabase;
 import io.github.ovso.onea.data.db.model.AppEntity;
 import io.github.ovso.onea.ui.base.DisposablePresenter;
-import io.github.ovso.onea.ui.utils.MarketType;
-import io.github.ovso.onea.ui.utils.SimOperator;
-import io.github.ovso.onea.ui.utils.UserAccountFetcher;
+import io.github.ovso.onea.utils.MarketType;
+import io.github.ovso.onea.utils.SimOperator;
+import io.github.ovso.onea.utils.UserAccountFetcher;
+import io.github.ovso.onea.utils.Consts;
 import io.reactivex.Observable;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -20,27 +22,45 @@ public class MarketPresenterImpl extends DisposablePresenter implements MarketPr
 
   private final View view;
   private final AppDatabase appDb;
-  private AtomicInteger itemId;
-  private int checkedMarketIndex;
+  private AtomicInteger marketButtonId;
+  private int checkedMarketId;
   private String emailText = "";
 
-  MarketPresenterImpl(MarketPresenter.View view) {
+  MarketPresenterImpl(View view) {
     this.view = view;
     appDb = App.getInstance().getAppDb();
-    itemId = new AtomicInteger(-1);
+    marketButtonId = new AtomicInteger(-1);
   }
 
   @Override public void onCreate() {
-    String email = UserAccountFetcher.getEmail(App.getInstance());
-    view.setupUserEmail(email);
-    view.enableConfirmButton(!TextUtils.isEmpty(email));
+    emailText = getEmail();
+    view.setupUserEmail(emailText);
+    view.enableConfirmButton(!TextUtils.isEmpty(emailText));
     reqMarkets();
+  }
+
+  @Override public void onResume() {
+    emailText = getEmail();
+    view.setupUserEmail(emailText);
+  }
+
+  private String getEmail() {
+    if (isTestMode()) {
+      return Prefs.getString(
+          Consts.PREFS_KEY_EMAIL, UserAccountFetcher.getEmail(App.getInstance()));
+    } else {
+      return UserAccountFetcher.getEmail(App.getInstance());
+    }
+  }
+
+  private boolean isTestMode() {
+    return Prefs.getBoolean(Consts.PREFS_KEY_MODE, false);
   }
 
   private void reqMarkets() {
     addDisposable(
         Observable.fromArray(MarketType.values())
-            .map(this::handleMarketInfo)
+            .map(this::getMarketInfo)
             .subscribeOn(schedulers.io())
             .observeOn(schedulers.ui())
             .subscribe(
@@ -54,7 +74,7 @@ public class MarketPresenterImpl extends DisposablePresenter implements MarketPr
     view.setupRadioGroup();
   }
 
-  private MarketInfo handleMarketInfo(MarketType marketType) {
+  private MarketInfo getMarketInfo(MarketType marketType) {
     List<AppEntity> entityByMarket = appDb.appsDao().getEntityByMarket(marketType.getName());
     MarketInfo marketInfo = new MarketInfo();
     marketInfo.name = marketType.getName();
@@ -64,10 +84,9 @@ public class MarketPresenterImpl extends DisposablePresenter implements MarketPr
   }
 
   private void consumerForReqMarkets(MarketInfo marketInfo) {
-    int viewId = itemId.incrementAndGet();
     String text = String.format("%s, %s개, %sKB",
         marketInfo.name, marketInfo.count, (marketInfo.tsize / 1024));
-    view.addRadioButton(viewId, text);
+    view.addRadioButton(marketButtonId.incrementAndGet(), text);
   }
 
   @Override public void onDestroy() {
@@ -75,7 +94,7 @@ public class MarketPresenterImpl extends DisposablePresenter implements MarketPr
   }
 
   @Override public void onMarketCheckedChange(int checkedId) {
-    checkedMarketIndex = checkedId;
+    checkedMarketId = checkedId;
   }
 
   @Override public void onConfirmClick() {
@@ -90,7 +109,7 @@ public class MarketPresenterImpl extends DisposablePresenter implements MarketPr
         RxBusHeaderInfo.builder()
             .email(emailText)
             .operatorType(type)
-            .marketType(MarketType.values()[checkedMarketIndex])
+            .marketType(MarketType.values()[checkedMarketId])
             .build()
     );
   }

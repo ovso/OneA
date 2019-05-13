@@ -1,4 +1,4 @@
-package io.github.ovso.onea.ui.utils;
+package io.github.ovso.onea.utils;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

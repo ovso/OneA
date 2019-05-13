@@ -12,6 +12,8 @@ public interface MarketPresenter {
 
   void onEmailTextChanged(String text);
 
+  void onResume();
+
   interface View {
 
     void addRadioButton(int viewId, String text);
@@ -24,6 +26,5 @@ public interface MarketPresenter {
 
     void navigateToExtra();
 
-    void exitApp();
   }
 }

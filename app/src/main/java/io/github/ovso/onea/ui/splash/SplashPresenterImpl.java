@@ -5,7 +5,7 @@ import io.github.ovso.onea.App;
 import io.github.ovso.onea.data.db.dao.Apps;
 import io.github.ovso.onea.data.db.model.AppEntity;
 import io.github.ovso.onea.ui.base.DisposablePresenter;
-import io.github.ovso.onea.ui.utils.AppsInfoProvider;
+import io.github.ovso.onea.utils.AppsInfoProvider;
 import io.reactivex.Single;
 import timber.log.Timber;
 

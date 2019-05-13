@@ -18,7 +18,7 @@ import io.github.ovso.onea.R;
 import io.github.ovso.onea.data.rx.dto.RxBusHeaderInfo;
 import io.github.ovso.onea.service.RegisterService;
 import io.github.ovso.onea.ui.base.BaseActivity;
-import io.github.ovso.onea.ui.utils.SimOperator;
+import io.github.ovso.onea.utils.SimOperator;
 
 public class ExtraInfoActivity extends BaseActivity implements ExtraInfoPresenter.View {
   @BindView(R.id.textview_header_operator_name) TextView operatorNameTextView;

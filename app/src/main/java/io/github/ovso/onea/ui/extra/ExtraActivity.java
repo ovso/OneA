@@ -15,7 +15,7 @@ import io.github.ovso.onea.R;
 import io.github.ovso.onea.data.rx.dto.RxBusHeaderInfo;
 import io.github.ovso.onea.ui.base.BaseActivity;
 import io.github.ovso.onea.ui.extrainfo.ExtraInfoActivity;
-import io.github.ovso.onea.ui.utils.SimOperator;
+import io.github.ovso.onea.utils.SimOperator;
 import java.util.List;
 
 public class ExtraActivity extends BaseActivity implements ExtraPresenter.View {

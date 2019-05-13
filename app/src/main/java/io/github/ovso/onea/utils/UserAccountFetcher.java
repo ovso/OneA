@@ -1,4 +1,4 @@
-package io.github.ovso.onea.ui.utils;
+package io.github.ovso.onea.utils;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;

@@ -1,7 +1,7 @@
 package io.github.ovso.onea.ui.splash;
 
 import io.github.ovso.onea.ui.base.IBuilder;
-import io.github.ovso.onea.ui.utils.AppsInfoProvider;
+import io.github.ovso.onea.utils.AppsInfoProvider;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
