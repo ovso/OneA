@@ -3,8 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="io.github.ovso.onea">
 
-  <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
-  <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+  <uses-permission
+      android:name="android.permission.GET_ACCOUNTS"
+      android:maxSdkVersion="22"/>
   <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
   <application
