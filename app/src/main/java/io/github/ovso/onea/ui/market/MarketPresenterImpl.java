@@ -1,16 +1,18 @@
 package io.github.ovso.onea.ui.market;
 
-import android.text.TextUtils;
+import android.accounts.AccountManager;
+import android.content.Intent;
+import android.os.Bundle;
 import com.pixplicity.easyprefs.library.Prefs;
 import io.github.ovso.onea.App;
-import io.github.ovso.onea.data.rx.dto.RxBusHeaderInfo;
 import io.github.ovso.onea.data.db.AppDatabase;
 import io.github.ovso.onea.data.db.model.AppEntity;
+import io.github.ovso.onea.data.rx.dto.RxBusHeaderInfo;
 import io.github.ovso.onea.ui.base.DisposablePresenter;
+import io.github.ovso.onea.utils.Consts;
 import io.github.ovso.onea.utils.MarketType;
 import io.github.ovso.onea.utils.SimOperator;
 import io.github.ovso.onea.utils.UserAccountFetcher;
-import io.github.ovso.onea.utils.Consts;
 import io.reactivex.Observable;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -33,15 +35,45 @@ public class MarketPresenterImpl extends DisposablePresenter implements MarketPr
   }
 
   @Override public void onCreate() {
-    emailText = getEmail();
-    view.setupUserEmail(emailText);
-    view.enableConfirmButton(!TextUtils.isEmpty(emailText));
     reqMarkets();
+    handleGetEmail();
+  }
+
+  private void handleGetEmail() {
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+      if (isTestMode()) {
+        emailText = getEmail();
+        view.setupUserEmail(emailText);
+        view.enableConfirmButton(UserAccountFetcher.isValidEmail(emailText));
+      } else {
+        view.navigateToChooseAccount();
+      }
+    } else {
+      emailText = UserAccountFetcher.getEmail(App.getInstance());
+      view.setupUserEmail(emailText);
+      view.enableConfirmButton(UserAccountFetcher.isValidEmail(emailText));
+    }
   }
 
   @Override public void onResume() {
-    emailText = getEmail();
-    view.setupUserEmail(emailText);
+    //emailText = getEmail();
+    //view.setupUserEmail(emailText);
+  }
+
+  @Override public void onActivityResult(int requestCode, Intent data) {
+    if(requestCode == MarketActivity.REQUEST_CODE_CHOOSE_ACCOUNT && data != null) {
+      Bundle extras = data.getExtras();
+      final String accountName = extras.getString(AccountManager.KEY_ACCOUNT_NAME);
+      final String accountType = extras.getString(AccountManager.KEY_ACCOUNT_TYPE);
+      Timber.d("accountName = " + accountName);
+      Timber.d("accountTYpe = " + accountType);
+      view.setupUserEmail(accountName);
+    }
+  }
+
+  @Override public void onRestart() {
+    Timber.d("onRestart()");
+    handleGetEmail();
   }
 
   private String getEmail() {

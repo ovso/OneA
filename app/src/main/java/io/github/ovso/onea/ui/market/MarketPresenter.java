@@ -1,5 +1,7 @@
 package io.github.ovso.onea.ui.market;
 
+import android.content.Intent;
+
 public interface MarketPresenter {
 
   void onCreate();
@@ -14,6 +16,10 @@ public interface MarketPresenter {
 
   void onResume();
 
+  void onActivityResult(int requestCode, Intent data);
+
+  void onRestart();
+
   interface View {
 
     void addRadioButton(int viewId, String text);
@@ -26,5 +32,6 @@ public interface MarketPresenter {
 
     void navigateToExtra();
 
+    void navigateToChooseAccount();
   }
 }
