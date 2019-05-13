@@ -5,5 +5,5 @@ import lombok.Data;
 
 @Data @Builder public class RxBusExtraInfo {
   private RxBusHeaderInfo headerInfo;
-  private String service;
+  private String extraServiceName;
 }

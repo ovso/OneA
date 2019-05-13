@@ -14,6 +14,8 @@ public interface ExtraPresenter {
 
   void onResume();
 
+  void onDestroy();
+
   interface View {
     void setupRecyclerView(SimOperator.Type operatorType, List<String> items);
 

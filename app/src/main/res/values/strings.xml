@@ -9,4 +9,5 @@
   <string name="extra_info_close_button">닫기 버튼</string>
   <string name="extra_info_cancel_button">취소 버튼</string>
   <string name="extra_info_dialog_msg_complete">입력한 email(%s)로 주문내역서가 발송되었습니다</string>
+  <string name="extra_info_unknown_service_name">통신사를 확인 할 수 없습니다.</string>
 </resources>

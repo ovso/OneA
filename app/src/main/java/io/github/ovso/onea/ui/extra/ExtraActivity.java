@@ -45,6 +45,11 @@ public class ExtraActivity extends BaseActivity implements ExtraPresenter.View {
     presenter.onPause();
   }
 
+  @Override protected void onDestroy() {
+    presenter.onDestroy();
+    super.onDestroy();
+  }
+
   @Override
   public void setupRecyclerView(SimOperator.Type type, List<String> items) {
     recyclerView.setLayoutManager(getLayoutManagerByOperator(type));

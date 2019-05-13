@@ -2,6 +2,7 @@ package io.github.ovso.onea.ui.extrainfo;
 
 import android.os.Handler;
 import android.os.Looper;
+import com.pixplicity.easyprefs.library.Prefs;
 import io.github.ovso.onea.App;
 import io.github.ovso.onea.R;
 import io.github.ovso.onea.data.rx.RxBus;
@@ -9,6 +10,9 @@ import io.github.ovso.onea.data.rx.dto.RxBusExtraInfo;
 import io.github.ovso.onea.ui.base.DisposablePresenter;
 import io.github.ovso.onea.utils.BataTime;
 import io.github.ovso.onea.utils.BataTimeCallback;
+import io.github.ovso.onea.utils.Consts;
+import io.github.ovso.onea.utils.SimOperator;
+import io.github.ovso.onea.utils.UserAccountFetcher;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,6 +37,31 @@ public class ExtraInfoPresenterImpl extends DisposablePresenter implements Extra
 
   @Override public void onDestroy() {
     clearDisposable();
+  }
+
+  @Override public void onResume() {
+    if (isTestMode()) {
+      int operatorIndex =
+          Prefs.getInt(Consts.PREFS_KEY_OPERATOR, SimOperator.Type.UNKNOWN.ordinal());
+      String email = Prefs.getString(
+          Consts.PREFS_KEY_EMAIL, UserAccountFetcher.getEmail(App.getInstance())
+      );
+      info.getHeaderInfo().setEmail(email);
+      info.getHeaderInfo().setOperatorType(SimOperator.Type.values()[operatorIndex]);
+      if (info.getHeaderInfo().getOperatorType() == SimOperator.Type.UNKNOWN) {
+        info.setExtraServiceName(
+            App.getInstance().getResources().getString(R.string.extra_info_unknown_service_name)
+        );
+        view.hideRegisterButton();
+      } else {
+        view.showRegisterButton();
+      }
+      updateScreen();
+    }
+  }
+
+  private boolean isTestMode() {
+    return Prefs.getBoolean(Consts.PREFS_KEY_MODE, false);
   }
 
   @Override public void onRegisterClick() {
@@ -66,8 +95,8 @@ public class ExtraInfoPresenterImpl extends DisposablePresenter implements Extra
   @Override public void onDialogCloseClick() {
     switch (timerStatus) {
       case TICK:
-        stopTimber();
         view.startForegroundService(time.get(), info.getHeaderInfo().getEmail());
+        stopTimber();
         break;
       case FINISH:
         view.exitApp();
@@ -79,12 +108,12 @@ public class ExtraInfoPresenterImpl extends DisposablePresenter implements Extra
     if (timer != null) {
       timer.stop();
     }
+    timerStatus = TimerStatus.FINISH;
+    time.set(MAX_SECOND);
   }
 
   @Override public void onDialogCancelClick() {
     stopTimber();
-    timerStatus = TimerStatus.FINISH;
-    time.set(MAX_SECOND);
   }
 
   private void toRxBusObservable() {
@@ -93,12 +122,16 @@ public class ExtraInfoPresenterImpl extends DisposablePresenter implements Extra
         rxBus.toObservable().subscribe(o -> {
           if (o instanceof RxBusExtraInfo) {
             info = ((RxBusExtraInfo) o);
-            view.setupHeader(info.getHeaderInfo());
-            view.setupExtraInfo(info.getService());
-            view.changeLayoutGravityForRegisterButton(info.getHeaderInfo().getOperatorType());
+            updateScreen();
           }
         })
     );
+  }
+
+  private void updateScreen() {
+    view.setupHeader(info.getHeaderInfo());
+    view.setupExtraInfo(info.getExtraServiceName());
+    view.changeLayoutGravityForRegisterButton(info.getHeaderInfo().getOperatorType());
   }
 
   @AllArgsConstructor @Getter enum TimerStatus {

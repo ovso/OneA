@@ -15,6 +15,8 @@ public interface ExtraInfoPresenter {
 
   void onDestroy();
 
+  void onResume();
+
   interface View {
 
     void setupHeader(RxBusHeaderInfo header);

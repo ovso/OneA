@@ -9,8 +9,8 @@ import io.github.ovso.onea.data.rx.dto.RxBusHeaderInfo;
 import io.github.ovso.onea.data.rx.RxBus;
 import io.github.ovso.onea.ui.base.DisposablePresenter;
 import io.github.ovso.onea.utils.Consts;
-import io.github.ovso.onea.utils.MarketType;
 import io.github.ovso.onea.utils.SimOperator;
+import io.github.ovso.onea.utils.UserAccountFetcher;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,6 +26,21 @@ public class ExtraPresenterImpl extends DisposablePresenter implements ExtraPres
   }
 
   @Override public void onCreate() {
+    addDisposable(
+        App.getInstance().getRxBus().toObservable().subscribe(o -> {
+          if ((o instanceof RxBusHeaderInfo)) {
+            header = (RxBusHeaderInfo) o;
+            updateScreen();
+          }
+        })
+    );
+  }
+
+  private void updateScreen() {
+    view.setupHeader(header);
+    items.clear();
+    items.addAll(getItems(header.getOperatorType()));
+    view.setupRecyclerView(header.getOperatorType(), items);
   }
 
   @Override public void onItemClick(int position) {
@@ -35,19 +50,10 @@ public class ExtraPresenterImpl extends DisposablePresenter implements ExtraPres
 
   private void sendEvent(int position) {
     RxBus rxBus = App.getInstance().getRxBus();
-    rxBus.send(RxBusExtraInfo.builder().headerInfo(header).service(items.get(position)).build());
+    rxBus.send(RxBusExtraInfo.builder().headerInfo(header).extraServiceName(items.get(position)).build());
   }
 
   @Override public void onPause() {
-    clearDisposable();
-  }
-
-  private int getSimOperatorIndex() {
-    if (isTestMode()) {
-      return Prefs.getInt(Consts.PREFS_KEY_OPERATOR, SimOperator.Type.UNKNOWN.ordinal());
-    } else {
-      return MarketType.ONE_STORE.ordinal();
-    }
   }
 
   private boolean isTestMode() {
@@ -55,17 +61,19 @@ public class ExtraPresenterImpl extends DisposablePresenter implements ExtraPres
   }
 
   @Override public void onResume() {
-    addDisposable(
-        App.getInstance().getRxBus().toObservable().subscribe(o -> {
-          if ((o instanceof RxBusHeaderInfo)) {
-            header = (RxBusHeaderInfo) o;
-            view.setupHeader(header);
-            items.clear();
-            items.addAll(getItems(header.getOperatorType()));
-            view.setupRecyclerView(header.getOperatorType(), items);
-          }
-        })
-    );
+    if (isTestMode()) {
+      int operatorIndex =
+          Prefs.getInt(Consts.PREFS_KEY_OPERATOR, SimOperator.Type.UNKNOWN.ordinal());
+      String email =
+          Prefs.getString(Consts.PREFS_KEY_EMAIL, UserAccountFetcher.getEmail(App.getInstance()));
+      header.setEmail(email);
+      header.setOperatorType(SimOperator.Type.values()[operatorIndex]);
+      updateScreen();
+    }
+  }
+
+  @Override public void onDestroy() {
+    clearDisposable();
   }
 
   private List<String> getItems(SimOperator.Type type) {

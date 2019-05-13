@@ -122,4 +122,9 @@ public class ExtraInfoActivity extends BaseActivity implements ExtraInfoPresente
   @OnClick(R.id.button_extra_info_register) void onRegisterClick() {
     presenter.onRegisterClick();
   }
+
+  @Override protected void onResume() {
+    super.onResume();
+    presenter.onResume();
+  }
 }
