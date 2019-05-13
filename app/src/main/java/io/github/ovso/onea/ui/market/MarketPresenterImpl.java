@@ -3,6 +3,7 @@ package io.github.ovso.onea.ui.market;
 import android.accounts.AccountManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import com.pixplicity.easyprefs.library.Prefs;
 import io.github.ovso.onea.App;
 import io.github.ovso.onea.data.db.AppDatabase;
@@ -46,10 +47,12 @@ public class MarketPresenterImpl extends DisposablePresenter implements MarketPr
         view.setupUserEmail(emailText);
         view.enableConfirmButton(UserAccountFetcher.isValidEmail(emailText));
       } else {
-        view.navigateToChooseAccount();
+        if (TextUtils.isEmpty(emailText)) {
+          view.navigateToChooseAccount();
+        }
       }
     } else {
-      emailText = UserAccountFetcher.getEmail(App.getInstance());
+      emailText = getEmail();
       view.setupUserEmail(emailText);
       view.enableConfirmButton(UserAccountFetcher.isValidEmail(emailText));
     }
@@ -61,18 +64,18 @@ public class MarketPresenterImpl extends DisposablePresenter implements MarketPr
   }
 
   @Override public void onActivityResult(int requestCode, Intent data) {
-    if(requestCode == MarketActivity.REQUEST_CODE_CHOOSE_ACCOUNT && data != null) {
+    if (requestCode == MarketActivity.REQUEST_CODE_CHOOSE_ACCOUNT && data != null) {
       Bundle extras = data.getExtras();
       final String accountName = extras.getString(AccountManager.KEY_ACCOUNT_NAME);
       final String accountType = extras.getString(AccountManager.KEY_ACCOUNT_TYPE);
       Timber.d("accountName = " + accountName);
       Timber.d("accountTYpe = " + accountType);
-      view.setupUserEmail(accountName);
+      emailText = accountName;
+      view.setupUserEmail(emailText);
     }
   }
 
   @Override public void onRestart() {
-    Timber.d("onRestart()");
     handleGetEmail();
   }
 
